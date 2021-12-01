@@ -1,0 +1,14 @@
+{
+  "name": "amz-categories",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/http.js",
+    "generate": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-xlsx": "^0.17.2"
+  }
+}
