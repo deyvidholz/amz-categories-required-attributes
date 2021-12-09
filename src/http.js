@@ -4,6 +4,7 @@ const {
   getCategory,
   searchCategory,
 } = require('./controllers/categories');
+const port = 3000;
 
 const app = express();
 
@@ -14,4 +15,6 @@ app.get('/categories/search/:category', searchCategory);
 app.get('/categories/:category', getCategory);
 app.get('/categories', getCategories);
 
-app.listen(3000, () => console.log('Server listening'));
+app.listen(port, () =>
+  console.log(`Server listening on http://localhost:${port}`)
+);

@@ -17,7 +17,7 @@ const filesInXlsDirectory = fs.readdirSync(xlsDirectory);
 
 // Filtering only xls and xlsx files
 const xlsFiles = filesInXlsDirectory.filter((fileName) =>
-  fileName.match(/\.xlsx?$/)
+  fileName.match(/\.(xlsx?|csv)$/)
 );
 
 // Converting all [xls, xlsx] files to JSON
@@ -26,39 +26,20 @@ for (const fileName of xlsFiles) {
   readAndConvertXSLToJSON(filePath);
 }
 
-console.log('Step 2: converting metadata from array to object');
-/**
- * Step 2 will reduce time to run this script
- */
-const parsedMetadata = {};
-const xpathIndexName = columnReplacers['X-Path'] || 'X-Path';
-const metadataFilePath = path.join(__dirname, 'json', 'metadata.json');
-let metadata = readFile(metadataFilePath);
-
-for (const index in metadata) {
-  const metadataValue = { ...metadata[index] };
-  const xpath = metadataValue[xpathIndexName];
-  parsedMetadata[xpath] = metadataValue;
-}
-
-const metadataParsedFilePath = path.join(
-  __dirname,
-  'json',
-  'metadata-parsed.json'
-);
-const metadataXPaths = Object.keys(parsedMetadata);
-
-saveJSONToFile(parsedMetadata, metadataParsedFilePath);
-
 console.log('Step 3: grouping attributes based on ProductType');
 
-const attributesFilePath = path.join(__dirname, 'json', 'attributes.json');
+const attributesFilePath = path.join(
+  __dirname,
+  'json',
+  'BASE_UNIFICADA_V2.json'
+);
 const data = readFile(attributesFilePath);
 const groupedAttributes = {};
 
 const indexName = columnReplacers['ProductType'] || 'ProductType';
 const XSDFileNameIndexName = columnReplacers['XSDFileName'] || 'XSDFileName';
-// const attributeIndexName = columnReplacers['XSD ATRIBUTE'] || 'XSD ATRIBUTE';
+
+const xsds = readFile(path.join(__dirname, 'xsds.json'));
 
 for (const attribute of data) {
   const productType = attribute[indexName];
@@ -73,49 +54,13 @@ for (const attribute of data) {
   groupedAttribute.ProductType_XSD = upperEveryFirstLetter(productType);
   groupedAttribute.attributes.push(attribute);
 
-  // Finding XSD information
-  const regex = new RegExp(`${groupedAttribute.ProductType_XSD}`);
-  const metadataIndex = metadataXPaths.find((xpath) => xpath.match(regex));
+  // Finding XSD
+  const xsdFilename = String(attribute.XSDFileName).replace(/\.xsd$/, '');
 
-  groupedAttribute.BaseCategory = null;
-  groupedAttribute.XSDFilePath = null;
-
-  if (metadataIndex) {
-    const metadataValue = parsedMetadata[metadataIndex];
-    groupedAttribute.BaseCategory = getBaseCategory(
-      metadataValue[xpathIndexName]
-    );
-    groupedAttribute.XSDFilePath = metadataValue[XSDFileNameIndexName];
+  if (xsds[xsdFilename]) {
+    groupedAttribute.BaseCategory = xsdFilename;
+    groupedAttribute.XSDFilePath = xsds[xsdFilename];
   }
-
-  // console.log(
-  //   'metadataIndex',
-  //   groupedAttribute.ProductType_XSD,
-  //   metadataIndex,
-  //   regex
-  // );
-
-  // const attributeMetadata = metadata.find(
-  //   (md) =>
-  //     md[indexName].toLowerCase() === groupedAttribute.ProductType_XSD ||
-  //     md[xpathIndexName].match(
-  //       new RegExp(`${groupedAttribute.ProductType_XSD}`)
-  //     )
-  // );
-
-  // const XSDFileNameIndexName = columnReplacers['XSDFileName'] || 'XSDFileName';
-
-  // if (attributeMetadata) {
-  //   groupedAttribute.BaseCategory = getBaseCategory(
-  //     attributeMetadata[xpathIndexName]
-  //   );
-
-  //   groupedAttribute.XSDFilePath = attributeMetadata[XSDFileNameIndexName];
-  // } else {
-  //   // XSD file was not found
-  //   groupedAttribute.BaseCategory = null;
-  //   groupedAttribute.XSDFilePath = null;
-  // }
 }
 
 saveJSONToFile(Object.values(groupedAttributes), attributesFilePath);

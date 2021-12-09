@@ -67,6 +67,7 @@ function readAndConvertXSLToJSON(filePath, page = 0) {
     .replace(/\.\w+$/, '.json');
 
   // Saving xls converted data to json
+  console.log('saving', jsonFilePath);
   saveJSONToFile(data, jsonFilePath);
 }
 

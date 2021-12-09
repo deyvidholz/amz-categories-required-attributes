@@ -6,7 +6,7 @@ function loadAttributes() {
     __dirname,
     '..',
     'json',
-    'attributes.json'
+    'BASE_UNIFICADA_V2.json'
   );
   return readFile(attributesFilePath);
 }
