@@ -8,24 +8,25 @@ function simplifyCategory(category) {
   const simplified = {
     ProductType_Report: category.ProductType_Report,
     ProductType_XSD: category.ProductType_XSD,
-    BaseCategory: category.BaseCategory,
+    ProductData: category.BaseCategory|| null,
     XSDFilePath,
     requiredAttributes: [],
     optionalAttributes: [],
   };
-
   simplified.requiredAttributes = category.attributes
     .filter((attr) => attr.MAtUsage === 'required')
     .map((attr) => ({
-      Label: attr.MAtAttributeLabel,
-      Attribute: attr.AttributeXSD,
+      Label: attr.AttributeLabel,
+      Attribute_XSD: attr.Attribute,
+      Attribute_FlatFile: attr.MAtAttribute,
     }));
 
   simplified.optionalAttributes = category.attributes
     .filter((attr) => attr.MAtUsage === 'optional')
     .map((attr) => ({
-      Label: attr.MAtAttributeLabel,
-      Attribute: attr.AttributeXSD,
+      Label: attr.AttributeLabel,
+      Attribute_XSD: attr.Attribute,
+      Attribute_FlatFile: attr.MAtAttribute,
     }));
 
   return simplified;
@@ -34,3 +35,5 @@ function simplifyCategory(category) {
 module.exports = {
   simplifyCategory,
 };
+
+// In this file you can replace left attributes name for showing on json

@@ -2,7 +2,6 @@ console.log('');
 const fs = require('fs');
 const path = require('path');
 const { readFile, saveJSONToFile } = require('./helpers/files');
-const { upperEveryFirstLetter, getBaseCategory } = require('./helpers/general');
 const {
   readAndConvertXSLToJSON,
   columnReplacers,
@@ -26,7 +25,7 @@ for (const fileName of xlsFiles) {
   readAndConvertXSLToJSON(filePath);
 }
 
-console.log('Step 3: grouping attributes based on ProductType');
+console.log('Step 2: grouping attributes based on ProductType');
 
 const attributesFilePath = path.join(
   __dirname,
@@ -51,7 +50,7 @@ for (const attribute of data) {
   }
 
   groupedAttribute[indexName] = productType;
-  groupedAttribute.ProductType_XSD = upperEveryFirstLetter(productType);
+  groupedAttribute.ProductType_XSD = attribute.ProductType_XSD;
   groupedAttribute.attributes.push(attribute);
 
   // Finding XSD

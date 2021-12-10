@@ -3,12 +3,10 @@ const { saveJSONToFile } = require('../helpers/files');
 const { getFilePath } = require('../helpers/general');
 
 const columnReplacers = {
-  'X-Path': 'XPath',
-  'IMDS-PTD': 'IMDSPTD',
-  'XSD ATRIBUTE': 'Attribute',
+  'AttributeXSD': 'Attribute',
   ProductType: 'ProductType_Report',
-  'MAtAttribute  FLAT_FILE': 'MAtAttribute',
-  'MAtAttributeLabel NOME DO ATRIBUTE EM MAT': 'AttributeLabel',
+  'Attribute_Flat_File': 'MAtAttribute',
+  'MAtAttributeLabel': 'AttributeLabel',
 };
 
 function readXlsFile(filePath) {

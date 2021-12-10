@@ -8,9 +8,9 @@ function getCategories(req, res) {
 
 function getCategory(req, res) {
   const categories = loadAttributes();
-  const productTypeColumnName =
-    'ProductType_XSD' || columnReplacers['ProductType'] || 'ProductType';
+  const productTypeColumnName = 'ProductType_XSD';
   const categoryName = req.params.category;
+
   const category = categories.find(
     (category) =>
       category[productTypeColumnName].toLowerCase() ===
@@ -28,8 +28,7 @@ function getCategory(req, res) {
 
 function searchCategory(req, res) {
   const categories = loadAttributes();
-  const productTypeColumnName =
-    'ProductType_XSD' || columnReplacers['ProductType'] || 'ProductType';
+  const productTypeColumnName = 'ProductType_XSD';
   const categoryName = req.params.category;
   const regex = new RegExp(`${categoryName}`, 'gi');
   const filteredCategories = categories.filter((category) =>
